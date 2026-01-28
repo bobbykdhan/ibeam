@@ -69,7 +69,7 @@ class DatabaseHandler:
 
                 if result:
                     # Check if the value is true (could be stored as boolean, int, or string)
-                    use_paper = result.get('use_paper_account') or result.get('value')
+                    use_paper = result.get('use_paper_account')
 
                     # Handle different types: boolean, int (1/0), or string ('true'/'false')
                     if isinstance(use_paper, bool):
@@ -84,6 +84,7 @@ class DatabaseHandler:
                         _LOGGER.info(f'Database check: machine {self.machine_name} should {"" if use_paper_bool else "NOT "}use paper account')
                         return use_paper_bool
                     else:
+                        print(result)
                         _LOGGER.warning(f'Unknown value type for use_paper_account: {type(use_paper)}')
                         return None
                 else:

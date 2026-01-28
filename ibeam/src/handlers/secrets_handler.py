@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Optional
 import requests
 
+from ibeam.src.handlers.db_handler import DatabaseHandler
 
 _LOGGER = logging.getLogger('ibeam.' + Path(__file__).stem)
 
@@ -37,6 +38,13 @@ class SecretsHandler():
     def __init__(self,
                  secrets_source: str,
                  gcp_base_url: Optional[str] = None,
+                 db_host: Optional[str] = None,
+                 db_user: Optional[str] = None,
+                 db_password: Optional[str] = None,
+                 db_name: Optional[str] = None,
+                 machine_name: Optional[str] = None,
+                 paper_account: Optional[str] = None,
+                 paper_password: Optional[str] = None,
                  ):
         self.secrets_source = secrets_source
         self.gcp_base_url = gcp_base_url
@@ -44,6 +52,19 @@ class SecretsHandler():
         """Character encoding for secret files"""
         self.encoding = os.environ.get(
             'IBEAM_ENCODING', default='UTF-8')
+
+        # Database configuration
+        self.db_handler = DatabaseHandler(
+            db_host=db_host,
+            db_user=db_user,
+            db_password=db_password,
+            db_name=db_name,
+            machine_name=machine_name
+        )
+        self.paper_account = paper_account
+        self.paper_password = paper_password
+        self._use_paper_from_db = None
+        self._db_check_done = False
 
     def secret_value(self, encoding, name: str,
                      lstrip=None, rstrip='\r\n') -> Optional[str]:
@@ -164,14 +185,39 @@ class SecretsHandler():
             return None
 
 
+    def _check_database(self):
+        """Check database once to determine if paper account should be used."""
+        if not self._db_check_done:
+            self._use_paper_from_db = self.db_handler.should_use_paper_account()
+            self._db_check_done = True
+            _LOGGER.debug(f'Database check result: {self._use_paper_from_db}')
+
     @property
     def account(self):
         """IBKR account name."""
+        self._check_database()
+
+        # If database says use paper account and paper credentials are available
+        if self._use_paper_from_db and self.paper_account:
+            _LOGGER.info('Using paper account credentials from database configuration')
+            # Set environment variable for use_paper_account flag
+            os.environ['IBEAM_USE_PAPER_ACCOUNT'] = 'true'
+            return self.paper_account
+
+        # Otherwise use regular account
         return self.secret_value(self.encoding, 'IBEAM_ACCOUNT')
 
     @property
     def password(self):
         """IBKR account password."""
+        self._check_database()
+
+        # If database says use paper account and paper credentials are available
+        if self._use_paper_from_db and self.paper_password:
+            _LOGGER.info('Using paper password from database configuration')
+            return self.paper_password
+
+        # Otherwise use regular password
         return self.secret_value(self.encoding, 'IBEAM_PASSWORD')
 
     @property

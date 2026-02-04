@@ -28,14 +28,23 @@ class DatabaseHandler:
         Returns:
             bool: True if paper account should be used, False otherwise.
         """
-        # If any required database credentials are missing, return False
-        if not all([self.db_host, self.db_user, self.db_password, self.db_name, self.machine_name]):
-            _LOGGER.info('Database credentials or machine name not provided, skipping database check')
-            return False
-
         # Check if we've already queried the database
         if self._use_paper is not None:
             return self._use_paper
+
+        # DBPASSWORD is intentionally excluded — it is valid for it to be
+        # None or empty (e.g. root with no password).  Only the other four
+        # are required.
+        required = {
+            'DBHOST': self.db_host,
+            'DBUSER': self.db_user,
+            'DBNAME': self.db_name,
+            'MACHINE_NAME': self.machine_name,
+        }
+        missing = [k for k, v in required.items() if v is None]
+        if missing:
+            _LOGGER.info(f'Skipping database check, missing env vars: {missing}')
+            return False
 
         try:
             import pymysql
@@ -46,7 +55,7 @@ class DatabaseHandler:
             connection = pymysql.connect(
                 host=self.db_host,
                 user=self.db_user,
-                password=self.db_password,
+                password=self.db_password or '',
                 database=self.db_name,
                 cursorclass=pymysql.cursors.DictCursor
             )

@@ -16,6 +16,7 @@ from ibeam.src.handlers.login_handler import LoginHandler
 from ibeam.src.handlers.process_handler import ProcessHandler
 from ibeam.src.handlers.secrets_handler import SecretsHandler
 from ibeam.src.handlers.strategy_handler import StrategyHandler
+from ibeam.src.handlers.db_handler import DatabaseHandler
 from ibeam.src.login.driver import DriverFactory, shut_down_browser
 from ibeam.src.login.targets import create_targets
 
@@ -60,6 +61,24 @@ if __name__ == '__main__':
 
     if args.verbose:
         logs.set_level_for_all(_LOGGER, logging.DEBUG)
+
+    # Database handler for machine status check
+    db_handler = DatabaseHandler(
+        db_host=cnf.DB_HOST,
+        db_user=cnf.DB_USER,
+        db_password=cnf.DB_PASSWORD,
+        db_name=cnf.DB_NAME,
+        machine_name=cnf.MACHINE_NAME
+    )
+
+    # Configure paper account credentials if database indicates
+    db_handler.configure_paper_account_env(
+        paper_account=cnf.PAPER_IBEAM_ACCOUNT,
+        paper_password=cnf.PAPER_IBEAM_PASSWORD
+    )
+
+    # Reload USE_PAPER_ACCOUNT after potential database modification
+    cnf.USE_PAPER_ACCOUNT = var.to_bool(os.environ.get('IBEAM_USE_PAPER_ACCOUNT', False))
 
     inputs_handler = InputsHandler(inputs_dir=cnf.INPUTS_DIR, gateway_dir=cnf.GATEWAY_DIR)
 

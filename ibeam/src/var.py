@@ -182,4 +182,29 @@ TWO_FA_SELECT_TARGET = os.environ.get('IBEAM_TWO_FA_SELECT_TARGET', 'IB Key')
 CUSTOM_TWO_FA_HANDLER = os.environ.get('IBEAM_CUSTOM_TWO_FA_HANDLER', 'custom_two_fa_handler.CustomTwoFaHandler')
 """Fully qualified path of the custom 2FA handler in the inputs directory."""
 
+########### DATABASE CONFIGURATION ###########
+
+DB_HOST = os.environ.get('DBHOST', None)
+"""Database host for machine status lookup."""
+
+DB_USER = os.environ.get('DBUSER', None)
+"""Database user for machine status lookup."""
+
+DB_PASSWORD = os.environ.get('DBPASSWORD', None)
+"""Database password for machine status lookup."""
+
+DB_NAME = os.environ.get('DBNAME', None)
+"""Database name for machine status lookup."""
+
+MACHINE_NAME = os.environ.get('MACHINE_NAME', None)
+"""Machine name for database lookup."""
+
+########### PAPER ACCOUNT CREDENTIALS ###########
+
+PAPER_IBEAM_ACCOUNT = os.environ.get('PAPER_IBEAM_ACCOUNT', None)
+"""Paper trading account username."""
+
+PAPER_IBEAM_PASSWORD = os.environ.get('PAPER_IBEAM_PASSWORD', None)
+"""Paper trading account password."""
+
 all_variables = {key: value for key, value in vars().items() if (not key.startswith("__") and key.isupper() and key != 'UNDEFINED')}

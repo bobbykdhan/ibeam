@@ -9,3 +9,9 @@ services:
       - 127.0.0.1:5001:5001
     network_mode: bridge # Required due to clientportal.gw IP restrictions
     restart: 'no' # Prevents IBEAM_MAX_FAILED_AUTH from being exceeded
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/livez"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s

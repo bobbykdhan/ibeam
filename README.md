@@ -281,15 +281,15 @@ authors make no warranty that the functionality of IBeam will be uninterrupted o
 corrected or that IBeam or the server that makes it available are free of viruses or anything else which may be harmful
 or destructive.
 
-## Built by Voy
+## Built by Voy, Modified by Bobby
 
-Hi! Thanks for checking out and using this library.
+Hi! Thanks for checking out and using this library. This is a fork I created but 
 
-If you are in need of some help with your project and would like to hire me, or just wanna chat about trading - I'm happy to talk.
+If you are in need of some help with your project and would like to hire him, or just wanna chat about trading - I'm happy to talk.
 
-You can contact me through: https://voyzan.com
+You can contact him through: https://voyzan.com
 
-Or if you'd just want to give something back, I've got a Buy Me A Coffee account:
+Or if you'd just want to give something back, he has a Buy Me A Coffee account:
 
 <a href="https://www.buymeacoffee.com/voyzan" rel="nofollow">
     <img src="https://raw.githubusercontent.com/Voyz/voyz_public/master/vz_BMC.png" alt="Buy Me A Coffee" style="max-width:100%;" width="192">

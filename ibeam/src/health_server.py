@@ -1,3 +1,4 @@
+import json
 import threading
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
@@ -11,7 +12,9 @@ def new_health_server(port: int, check_status, get_shutdown_status,
                       deactivate_callback:callable):
     class HealthzHandler(BaseHTTPRequestHandler):
         def do_GET(self):
-            if self.path == "/livez":
+            if self.path == "/health":
+                return self._health()
+            elif self.path == "/livez":
                 return self._live()
             elif self.path == "/readyz":
                 return self._ready()
@@ -20,6 +23,16 @@ def new_health_server(port: int, check_status, get_shutdown_status,
             elif self.path == "/deactivate":
                 return self._deactivate()
             self.send_error(404, "Not Found")
+
+        def _health(self):
+            healthy = not get_shutdown_status()
+            status = check_status()
+            authenticated = status.authenticated
+
+            self.send_response(200 if healthy else 500)
+            self.send_header("Content-type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps({"healthy": healthy, "authenticated": authenticated}).encode())
 
         def _live(self):
             if get_shutdown_status():

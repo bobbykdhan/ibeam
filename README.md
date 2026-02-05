@@ -283,7 +283,7 @@ or destructive.
 
 ## Built by Voy, Modified by Bobby
 
-Hi! Thanks for checking out and using this library. This is a fork I created but 
+Hi! Thanks for checking out and using this library. This is a fork I created. 
 
 If you are in need of some help with your project and would like to hire him, or just wanna chat about trading - I'm happy to talk.
 

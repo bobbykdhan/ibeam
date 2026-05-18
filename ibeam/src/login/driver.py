@@ -145,15 +145,25 @@ class DriverFactory():
 
 def start_up_browser(driver_factory:DriverFactory) -> (webdriver.Chrome, Optional[Display]):
     display = None
-    if sys.platform == 'linux':
-        display = Display(visible=False, size=(800, 600))
-        display.start()
+    driver = None
+    success = False
+    try:
+        if sys.platform == 'linux':
+            display = Display(visible=False, size=(800, 600))
+            display.start()
 
-    driver = driver_factory.new_driver()
-    if driver is None:
-        return False, False
+        driver = driver_factory.new_driver()
+        if driver is None:
+            return None, None
 
-    return driver, display
+        success = True
+        return driver, display
+    finally:
+        if not success:
+            if driver is not None:
+                driver.quit()
+            if display is not None:
+                display.stop()
 
 
 def shut_down_browser(driver:webdriver.Chrome, display:Optional[Display]):

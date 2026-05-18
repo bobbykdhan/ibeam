@@ -6,3 +6,4 @@ psutil==5.9.*
 requests==2.31.*
 pillow==9.5.*
 pyotp==2.9.*
+pymysql==1.1.*

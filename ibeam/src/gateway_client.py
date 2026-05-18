@@ -102,8 +102,7 @@ class GatewayClient():
             pass
         self._scheduler.remove_all_jobs()
         self._scheduler.shutdown(wait=False)
-        if self._health_server:
-            self._health_server.shutdown()
+        self.shutdown()
 
     def _maintenance(self):
         if not self._active:
@@ -127,7 +126,8 @@ class GatewayClient():
                 _LOGGER.warning(f'Validation result is False when IBeam attempted to extend the SSO token. This could indicate token authentication issues.')
 
     def shutdown(self):
-        self._health_server.shutdown()
+        if self._health_server:
+            self._health_server.shutdown()
 
     def __getstate__(self):
         state = self.__dict__.copy()

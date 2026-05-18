@@ -105,7 +105,7 @@ USER_NAME_EL = os.environ.get('IBEAM_USER_NAME_EL', None)
 PASSWORD_EL = os.environ.get('IBEAM_PASSWORD_EL', 'NAME@@password')
 """HTML element name attribute containing the password input field."""
 
-SUBMIT_EL = os.environ.get('IBEAM_SUBMIT_EL', 'CSS_SELECTOR@@.btn.btn-lg.btn-primary')
+SUBMIT_EL = os.environ.get('IBEAM_SUBMIT_EL', 'CSS_SELECTOR@@.btn.btn-lg.xyz-button-login')
 """HTML element name attribute containing the submit button."""
 
 ERROR_EL = os.environ.get('IBEAM_ERROR_EL', None)
@@ -131,6 +131,9 @@ ERROR_SCREENSHOTS = to_bool(os.environ.get('IBEAM_ERROR_SCREENSHOTS', False))
 
 MAX_FAILED_AUTH = int(os.environ.get('IBEAM_MAX_FAILED_AUTH', 5))
 """Maximum number of failed authentication attempts."""
+
+COUNT_TIMEOUT_AS_FAILED = to_bool(os.environ.get('IBEAM_COUNT_TIMEOUT_AS_FAILED', False))
+"""Whether to count login timeouts toward the maximum number of failed authentication attempts."""
 
 MIN_PRESUBMIT_BUFFER = int(os.environ.get('IBEAM_MIN_PRESUBMIT_BUFFER', 5))
 """Minimum number of seconds to wait before hitting the submit button"""

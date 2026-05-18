@@ -250,16 +250,25 @@ class HttpHandler():
         if status.session:
             json_response = json.loads(status.response)
 
-            status.authenticated = json_response['iserver']['authStatus']['authenticated']
-            status.competing = json_response['iserver']['authStatus']['competing']
-            status.connected = json_response['iserver']['authStatus']['connected']
-            status.collision = json_response['collission']
-            status.session_id = json_response['session']
-            status.expires = int(json_response['ssoExpires'])
+            iserver = json_response.get('iserver')
+            auth_status = iserver.get('authStatus') if iserver is not None else None
 
-            # some fields are not present if unauthenticated
-            status.server_name = json_response['iserver']['authStatus'].get('serverInfo', {}).get('serverName')
-            status.server_version = json_response['iserver']['authStatus'].get('serverInfo', {}).get('serverVersion')
+            if auth_status is not None:
+                status.authenticated = auth_status['authenticated']
+                status.competing = auth_status['competing']
+                status.connected = auth_status['connected']
+                # some fields are not present if unauthenticated
+                status.server_name = auth_status.get('serverInfo', {}).get('serverName')
+                status.server_version = auth_status.get('serverInfo', {}).get('serverVersion')
+
+                status.collision = json_response.get('collission', False)
+                status.session_id = json_response.get('session')
+                status.expires = int(json_response['ssoExpires']) if 'ssoExpires' in json_response else None
+            else:
+                _LOGGER.warning(f'Response does not contain expected "iserver.authStatus" structure, treating as not authenticated. Response: {status.response}')
+                status.authenticated = False
+                status.competing = False
+                status.connected = False
 
         return status
 

@@ -119,6 +119,7 @@ if __name__ == '__main__':
         max_failed_auth=cnf.MAX_FAILED_AUTH,
         outputs_dir=cnf.OUTPUTS_DIR,
         use_paper_account=cnf.USE_PAPER_ACCOUNT,
+        count_timeout_as_failed=cnf.COUNT_TIMEOUT_AS_FAILED,
     )
 
     process_handler = ProcessHandler(
@@ -194,6 +195,7 @@ if __name__ == '__main__':
 
             if shutdown:
                 _LOGGER.warning('Shutting IBeam down due to critical error.')
+                client.shutdown()
             else:
                 client.maintain()
         else:

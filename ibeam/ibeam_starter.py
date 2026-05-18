@@ -89,7 +89,17 @@ if __name__ == '__main__':
     )
 
     _LOGGER.info(f'Secrets source: {cnf.SECRETS_SOURCE}')
-    secrets_handler = SecretsHandler(secrets_source=cnf.SECRETS_SOURCE, gcp_base_url=cnf.GCP_SECRETS_URL)
+    secrets_handler = SecretsHandler(
+        secrets_source=cnf.SECRETS_SOURCE,
+        gcp_base_url=cnf.GCP_SECRETS_URL,
+        db_host=cnf.DBHOST,
+        db_user=cnf.DBUSER,
+        db_password=cnf.DBPASSWORD,
+        db_name=cnf.DBNAME,
+        machine_name=cnf.MACHINE_NAME,
+        paper_account=cnf.PAPER_IBEAM_ACCOUNT,
+        paper_password=cnf.PAPER_IBEAM_PASSWORD,
+    )
 
     targets = create_targets(cnf)
 

@@ -101,6 +101,16 @@ Create an `env.list` file in the same directory with the following contents:
 ```posh
 IBEAM_ACCOUNT=your_account123
 IBEAM_PASSWORD=your_password123
+
+# Optional: Database-based Paper Account Configuration
+# If configured, IBeam will query the database to determine if this machine should use paper account
+# DBHOST=your_database_host
+# DBUSER=your_database_user
+# DBPASSWORD=your_database_password
+# DBNAME=your_database_name
+# MACHINE_NAME=your_machine_name
+# PAPER_IBEAM_ACCOUNT=your_paper_account
+# PAPER_IBEAM_PASSWORD=your_paper_password
 ```
 
 Run the following command:
@@ -140,6 +150,66 @@ In a standard startup IBeam performs the following:
     1. Verify once again if Gateway is running and authenticated.
 1. **Start the maintenance**, attempting to keep the Gateway alive and authenticated. Will repeat login if finds no
    active session or the session is not authenticated.
+
+## <a name="database-config"></a>Database-based Paper Account Configuration
+
+IBeam supports querying a MySQL database to determine whether a specific machine should use paper or live account credentials. This is useful when managing multiple instances of IBeam across different machines where you want centralized control over which accounts are used.
+
+### How it works
+
+When database configuration is provided:
+
+1. On startup, IBeam queries the `IBEAM` table in your database
+2. It looks for a row where `machine_name` matches the value of the `MACHINE_NAME` environment variable
+3. If found and the value (stored in a column like `use_paper_account` or `value`) is `true`:
+   - IBeam automatically sets `IBEAM_USE_PAPER_ACCOUNT=true`
+   - Uses `PAPER_IBEAM_ACCOUNT` and `PAPER_IBEAM_PASSWORD` for authentication
+4. If not found or value is `false`, IBeam uses the standard `IBEAM_ACCOUNT` and `IBEAM_PASSWORD`
+
+### Database Table Structure
+
+Your database should have a table named `IBEAM` with at least these columns:
+- `machine_name` - The unique identifier for each machine
+- `use_paper_account` or `value` - Boolean/int/string indicating whether to use paper account
+
+Example SQL:
+```sql
+CREATE TABLE IBEAM (
+    machine_name VARCHAR(255) PRIMARY KEY,
+    use_paper_account BOOLEAN
+);
+
+INSERT INTO IBEAM (machine_name, use_paper_account) VALUES ('trading-machine-1', true);
+INSERT INTO IBEAM (machine_name, use_paper_account) VALUES ('trading-machine-2', false);
+```
+
+### Required Environment Variables
+
+```posh
+# Database connection
+DBHOST=localhost
+DBUSER=ibeam_user
+DBPASSWORD=secure_password
+DBNAME=trading_config
+MACHINE_NAME=trading-machine-1
+
+# Paper account credentials (used when database indicates paper account)
+PAPER_IBEAM_ACCOUNT=paper_account_username
+PAPER_IBEAM_PASSWORD=paper_account_password
+
+# Live account credentials (fallback when database indicates live account)
+IBEAM_ACCOUNT=live_account_username
+IBEAM_PASSWORD=live_account_password
+```
+
+### Dependencies
+
+The database feature requires `pymysql`. Install with:
+```posh
+pip install pymysql
+```
+
+This is automatically included when installing IBeam via pip.
 
 ## <a name="security"></a>Security
 
@@ -211,15 +281,15 @@ authors make no warranty that the functionality of IBeam will be uninterrupted o
 corrected or that IBeam or the server that makes it available are free of viruses or anything else which may be harmful
 or destructive.
 
-## Built by Voy
+## Built by Voy, Modified by Bobby
 
-Hi! Thanks for checking out and using this library.
+Hi! Thanks for checking out and using this library. This is a fork I created. 
 
-If you are in need of some help with your project and would like to hire me, or just wanna chat about trading - I'm happy to talk.
+If you are in need of some help with your project and would like to hire him, or just wanna chat about trading - I'm happy to talk.
 
-You can contact me through: https://voyzan.com
+You can contact him through: https://voyzan.com
 
-Or if you'd just want to give something back, I've got a Buy Me A Coffee account:
+Or if you'd just want to give something back, he has a Buy Me A Coffee account:
 
 <a href="https://www.buymeacoffee.com/voyzan" rel="nofollow">
     <img src="https://raw.githubusercontent.com/Voyz/voyz_public/master/vz_BMC.png" alt="Buy Me A Coffee" style="max-width:100%;" width="192">

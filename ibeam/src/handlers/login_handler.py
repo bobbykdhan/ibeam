@@ -466,6 +466,8 @@ class LoginHandler():
         try:
             _LOGGER.info(f'Loading auth webpage at {self.base_url + self.route_auth}')
             driver, display = start_up_browser(self.driver_factory)
+            if driver is None:
+                return False, False
 
             wait_and_identify_trigger = self.load_page(targets, driver, self.base_url, self.route_auth)
 

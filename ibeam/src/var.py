@@ -161,13 +161,13 @@ UI_SCALING = float(os.environ.get('IBEAM_UI_SCALING', 1))
 
 ########### TWO-FACTOR AUTHENTICATION ###########
 
-TWO_FA_EL_ID = os.environ.get('IBEAM_TWO_FA_EL_ID', 'ID@@twofactbase')
+TWO_FA_EL_ID = os.environ.get('IBEAM_TWO_FA_EL_ID', 'CLASS_NAME@@xyzblock-silver')
 """HTML element check for if Gateway will require 2FA code authentication."""
 
-TWO_FA_NOTIFICATION_EL = os.environ.get('IBEAM_TWO_FA_NOTIFICATION_EL', 'CLASS_NAME@@login-step-notification')
+TWO_FA_NOTIFICATION_EL = os.environ.get('IBEAM_TWO_FA_NOTIFICATION_EL', 'CLASS_NAME@@xyzblock-notification')
 """HTML element check for if Gateway will require 2FA notification authentication."""
 
-TWO_FA_INPUT_EL_ID = os.environ.get('IBEAM_TWO_FA_INPUT_EL_ID', 'ID@@xyz-field-bronze-response')
+TWO_FA_INPUT_EL_ID = os.environ.get('IBEAM_TWO_FA_INPUT_EL_ID', 'ID@@xyz-field-silver-response')
 """HTML element to input 2FA code into"""
 
 TWO_FA_HANDLER = os.environ.get('IBEAM_TWO_FA_HANDLER', None)

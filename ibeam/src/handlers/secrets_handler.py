@@ -192,16 +192,19 @@ class SecretsHandler():
             self._db_check_done = True
             _LOGGER.debug(f'Database check result: {self._use_paper_from_db}')
 
+    def _should_use_paper_account(self) -> bool:
+        """Determine if paper account should be used based on database or environment."""
+        self._check_database()
+        if self._use_paper_from_db and self.paper_account:
+            return True
+        return False
+
     @property
     def account(self):
         """IBKR account name."""
-        self._check_database()
-
         # If database says use paper account and paper credentials are available
-        if self._use_paper_from_db and self.paper_account:
+        if self._should_use_paper_account():
             _LOGGER.info('Using paper account credentials from database configuration')
-            # Set environment variable for use_paper_account flag
-            os.environ['IBEAM_USE_PAPER_ACCOUNT'] = 'true'
             return self.paper_account
 
         # Otherwise use regular account
@@ -210,15 +213,18 @@ class SecretsHandler():
     @property
     def password(self):
         """IBKR account password."""
-        self._check_database()
-
         # If database says use paper account and paper credentials are available
-        if self._use_paper_from_db and self.paper_password:
+        if self._should_use_paper_account():
             _LOGGER.info('Using paper password from database configuration')
             return self.paper_password
 
         # Otherwise use regular password
         return self.secret_value(self.encoding, 'IBEAM_PASSWORD')
+
+    @property
+    def use_paper_account(self) -> bool:
+        """Whether to use paper account mode based on database or config."""
+        return self._should_use_paper_account()
 
     @property
     def key(self):

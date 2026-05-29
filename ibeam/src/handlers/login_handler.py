@@ -165,12 +165,12 @@ class LoginHandler():
             raise AttemptException(cause='shutdown')
 
         # input credentials
+        wait_and_identify_trigger(is_clickable(targets['USER_NAME']))
+
         user_name_el = find_element(targets['USER_NAME'], driver)
         password_el = find_element(targets['PASSWORD'], driver)
 
-        wait_and_identify_trigger(is_clickable(targets['USER_NAME']))
-
-        if self.use_paper_account:
+        if self.secrets_handler.use_paper_account:
             _LOGGER.info('Switching to paper mode')
             live_paper_toggle_el = find_element(targets['LIVE_PAPER_TOGGLE'], driver)
             live_paper_toggle_el.click()
@@ -192,6 +192,7 @@ class LoginHandler():
         time.sleep(presubmit_buffer)
 
         _LOGGER.info('Submitting the form')
+        wait_and_identify_trigger(is_clickable(targets['SUBMIT']), skip_identify=True)
         submit_form_el = find_element(targets['SUBMIT'], driver)
         submit_form_el.click()
 

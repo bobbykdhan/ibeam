@@ -8,3 +8,4 @@ ibeam.egg-info
 __pycache__
 .idea
 .venv*
+.env

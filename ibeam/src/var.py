@@ -1,5 +1,6 @@
 import os
 
+from ibeam.src.handlers.env_handler import get_hostname
 from ibeam.src.utils.py_utils import strtobool
 
 UNDEFINED = object()
@@ -187,8 +188,9 @@ CUSTOM_TWO_FA_HANDLER = os.environ.get('IBEAM_CUSTOM_TWO_FA_HANDLER', 'custom_tw
 
 ########### DATABASE CONFIGURATION ###########
 
-DBHOST = os.environ.get('DBHOST', None)
-"""Database host for machine status check."""
+DBHOST = os.environ.get('DBHOST', get_hostname())
+"""Database host for machine status check. Defaults to the host reachable from
+the current runtime environment (see env_handler.get_hostname)."""
 
 DBUSER = os.environ.get('DBUSER', None)
 """Database user for machine status check."""

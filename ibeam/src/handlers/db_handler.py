@@ -63,7 +63,7 @@ class DatabaseHandler:
         try:
             with connection.cursor() as cursor:
                 # Query the IBEAM table for the machine name
-                sql = "SELECT * FROM IBEAM WHERE machine_name = %s"
+                sql = "SELECT * FROM ibeam WHERE machine_name = %s"
                 cursor.execute(sql, (self.machine_name,))
                 result = cursor.fetchone()
 

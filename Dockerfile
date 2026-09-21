@@ -26,13 +26,19 @@ RUN \
     DEBIAN_FRONTEND=noninteractive apt-get install -y default-jre dbus-x11 xfonts-base xfonts-100dpi \
         xfonts-75dpi xfonts-scalable xorg xvfb gtk2-engines-pixbuf nano curl iputils-ping \
         build-essential && \
-    # Pin chromium/chromium-driver: 150.0.7871.46 crashes on startup with SIGTRAP
-    # (int3;ud2 trap in a stripped Chromium function) regardless of sandbox/seccomp flags.
-    # Hold at last known-good version until upstream fixes it.
+    # Pin chromium/chromium-driver: 150.0.7871.46 crashed on startup with SIGTRAP
+    # (int3;ud2 trap in a stripped Chromium function) regardless of sandbox/seccomp
+    # flags. 147.0.7727.137 was pinned as the prior known-good version, but by the
+    # time this image is rebuilt that version has usually been superseded and purged
+    # from the Debian mirrors, so the exact-version apt install fails (or, on hosts
+    # that fell back to an unpinned older image, silently reinstalls whatever
+    # version -- including the broken 150.x -- is current at build time). 153.x has
+    # been verified to start reliably; keep this pin current and bump it whenever a
+    # rebuild is needed rather than letting it go stale.
     DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-downgrades \
-        chromium=147.0.7727.137-1~deb12u1 \
-        chromium-driver=147.0.7727.137-1~deb12u1 \
-        chromium-common=147.0.7727.137-1~deb12u1 && \
+        chromium=153.0.8010.52-1~deb12u1 \
+        chromium-driver=153.0.8010.52-1~deb12u1 \
+        chromium-common=153.0.8010.52-1~deb12u1 && \
     apt-mark hold chromium chromium-driver chromium-common && \
     # Install python packages
     pip install --upgrade pip setuptools wheel && \
